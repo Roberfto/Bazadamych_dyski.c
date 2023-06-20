@@ -60,7 +60,6 @@ void bazawyswietlanie() {
     fclose(file);
 
 }
-void ModyfikujRekord(FILE* file, int akrekord);
 
 void dodawanierekordu() {
     int Id;
