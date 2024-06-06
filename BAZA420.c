@@ -430,6 +430,12 @@ void przeglad() {
                 aktualnyRekord = 0;
                 break;
             case 'h':
+                if (liczbaRekordow > 0) {
+                    aktualnyRekord = liczbaRekordow - 1;
+                } else {
+                    leftpadding();
+                    printf("Jestes na ostatnim rekordzie.\n");
+                }
                 break;
             case 'd':
                 leftpadding();
