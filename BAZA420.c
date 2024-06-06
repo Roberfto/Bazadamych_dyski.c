@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <windows.h>
+#include <time.h>
 
 char aktyny[100];
 
@@ -43,18 +44,48 @@ void leftpadding() {
         printf(" ");
     }
 }
+const char *random_string(int length) {
+    static char charset[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    char *random_string = NULL;
+
+    if (length) {
+        random_string = malloc(sizeof(char) * (length + 1));
+
+        if (random_string) {
+            for (int n = 0; n < length; n++) {
+                int key = rand() % (int)(sizeof(charset) - 1);
+                random_string[n] = charset[key];
+            }
+            random_string[length] = '\0';
+        }
+    }
+    return random_string;
+}
+
+const char *random_producent() {
+    const char *producenci[] = {"Seagate", "Western Digital", "Samsung", "Kingston", "SanDisk", "Crucial", "Toshiba", "Adata"};
+    return producenci[rand() % 8];
+}
+
+const char *random_typ() {
+    const char *typy[] = {"SSD", "HDD", "M.2"};
+    return typy[rand() % 3];
+}
+
+double random_pojemnosc() {
+    return (double)(rand() % (8192 - 128 + 1) + 128);  // Pojemność od 128 do 8192
+}
+
+double random_cena() {
+    return ((double)(rand() % (200000 - 5000 + 1) + 5000)) / 100;  // Cena od 50.00 do 2000.00
+}
 
 void createDatabase() {
-
     system("cls");
     char nazwa[100];
     leftpadding();
     printf("Podaj nazwe pliku bazy danych: ");
     scanf("%s", nazwa);
-
-    for (int i = 0; i < sizeof(nazwa); i++) {
-        aktyny[i] = nazwa[i];
-    }
 
     FILE *file = fopen(nazwa, "w"); // Tworzenie nowego pliku
     if (file == NULL) {
@@ -71,16 +102,22 @@ void createDatabase() {
         return;
     }
 
-    fprintf(dyskip, "1 Kingston Intel SSD 240.00 99.99\n");
-    fprintf(dyskip, "2 Seagate WD HDD 1000.00 59.99\n");
-    fprintf(dyskip, "3 Samsung Samsung SSD 500.00 129.99\n");
+    srand(time(NULL)); // Inicjalizacja generatora liczb losowych
+
+    for (int i = 1; i <= 10; i++) {
+        const char *nazwa = random_string(10);  // Generowanie losowej nazwy
+        const char *producent = random_producent();
+        const char *typ = random_typ();
+        double pojemnosc = random_pojemnosc();
+        double cena = random_cena();
+        fprintf(dyskip, "%d %s %s %s %.2f %.2f\n", i, nazwa, producent, typ, pojemnosc, cena);
+        free((void*)nazwa);  // Zwolnienie pamięci
+    }
 
     fclose(dyskip);
 
     leftpadding();
-    printf(
-            "Utworzono baze danych o nazwie \"%s\" i dodano przykladowe rekordy.\n",
-            nazwa);
+    printf("Utworzono baze danych o nazwie \"%s\" i dodano przykladowe rekordy.\n", nazwa);
     printf("\n");
 
     leftpadding();
